@@ -7,6 +7,8 @@ import javax.media.opengl.glu.GLU;
 
 
 public class Ue3_3 extends Frame {
+	private static final long serialVersionUID = 3084606549398971011L;
+
 	public static void main(String[] args) {
 		new Ue3_3();
 	}
