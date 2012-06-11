@@ -1,6 +1,5 @@
 package bezier;
 
-import static java.lang.Math.max;
 import static javax.media.opengl.GL2.*;
 
 import java.awt.Frame;
@@ -10,8 +9,6 @@ import java.awt.geom.Point2D;
 import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-
-import com.jogamp.opengl.util.awt.TextRenderer;
 
 public class CasteljauRenderer implements GLEventListener {
 	static final GLU glu = new GLU();
