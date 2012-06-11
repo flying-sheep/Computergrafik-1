@@ -1,14 +1,10 @@
 package terrain;
 
 import static java.lang.Math.max;
-import static java.lang.Math.sqrt;
 import static javax.media.opengl.GL2.*;
 
-import java.awt.Canvas;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -23,7 +19,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
-import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 class HeightmapRenderer implements GLEventListener {

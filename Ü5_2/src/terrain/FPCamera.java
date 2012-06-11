@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
 
 import com.jogamp.opengl.util.FPSAnimator;
