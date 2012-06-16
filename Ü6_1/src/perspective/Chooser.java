@@ -6,6 +6,8 @@ import static java.lang.Math.toRadians;
 
 import static javax.media.opengl.GL2.*;
 
+import gl.Util;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -142,50 +144,12 @@ public class Chooser extends JFrame {
 			
 			gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
-			drawCoordinateSystem(gl);
+			Util.drawCoordinateSystem(gl);
 			gl.glColor3d(0, 0, 1);
-			drawCuboid(gl, 1, 1, 1);
+			Util.drawCuboid(gl, 1, 1, 1);
 		}
 		
 		public void dispose(GLAutoDrawable drawable) {}
-		
-		void drawCoordinateSystem(GL2 gl) {
-			gl.glBegin(GL_LINES);
-			gl.glColor3d(1, 0, 0);
-			
-			gl.glVertex3i(0, 0, 0);
-			gl.glVertex3i(1, 0, 0);
-			
-			gl.glColor3d(1, 1, 0);
-			
-			gl.glVertex3i(0, 0, 0);
-			gl.glVertex3i(0, 1, 0);
-			
-			gl.glColor3d(0, 1, 0);
-			
-			gl.glVertex3i(0, 0, 0);
-			gl.glVertex3i(0, 0, 1);
-			gl.glEnd();
-		}
-		
-		void drawCuboid(GL2 gl, double w, double h, double d) {
-			gl.glBegin(GL_QUAD_STRIP);
-			for (int s=0; s<10; s++)
-				gl.glVertex3d(
-					(s%2 == 0) ? -w/2 : w/2,
-					(s<4 || s>7) ? h/2 : -h/2,
-					(s<2 || s>5) ? -d/2 : d/2);
-			gl.glEnd();
-			
-			gl.glBegin(GL_QUADS);
-			for (int l=-1; l<2; l+=2) {
-				gl.glVertex3d(l*w/2,  h/2, -d/2);
-				gl.glVertex3d(l*w/2,  h/2,  d/2);
-				gl.glVertex3d(l*w/2, -h/2,  d/2);
-				gl.glVertex3d(l*w/2, -h/2, -d/2);
-			}
-			gl.glEnd();
-		}
 	}
 	
 	public static void main(String[] args) {

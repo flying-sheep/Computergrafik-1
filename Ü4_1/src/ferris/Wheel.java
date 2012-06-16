@@ -4,6 +4,8 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 
+import gl.Util;
+
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -93,8 +95,8 @@ class Wheel implements GLEventListener {
 		
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		
-		drawGrid();
-		drawCoordinateSystem();
+		Util.drawGrid(gl, 10);
+		Util.drawCoordinateSystem(gl);
 		drawWheel();
 		drawPiles();
 		
@@ -113,42 +115,6 @@ class Wheel implements GLEventListener {
 	}
 	
 	public void dispose(GLAutoDrawable drawable) {}
-	
-	void drawCoordinateSystem() {
-		gl.glBegin(GL2.GL_LINES);
-		
-		gl.glColor3d(1, 0, 0);
-		
-		gl.glVertex3i(0, 0, 0);
-		gl.glVertex3i(1, 0, 0);
-		
-		gl.glColor3d(1, 1, 0);
-		
-		gl.glVertex3i(0, 0, 0);
-		gl.glVertex3i(0, 1, 0);
-		
-		gl.glColor3d(0, 1, 0);
-		
-		gl.glVertex3i(0, 0, 0);
-		gl.glVertex3i(0, 0, 1);
-		
-		gl.glEnd();
-	}
-	
-	void drawGrid() {
-		gl.glBegin(GL2.GL_LINES);
-		
-		gl.glColor3d(.3f, .3f, .3f);
-		
-		for (int c = -5; c <= 5; c++) {
-			gl.glVertex3i(c, 0, -5);
-			gl.glVertex3i(c, 0, 5);
-			gl.glVertex3i(-5, 0, c);
-			gl.glVertex3i(5, 0, c);
-		}
-		
-		gl.glEnd();
-	}
 	
 	void drawWheel() {
 		gl.glPushMatrix();
@@ -191,12 +157,12 @@ class Wheel implements GLEventListener {
 	
 	void drawCarriage() {
 		gl.glColor3d(1, 0, 0);
-		drawCuboid(Measures.CARRIAGE_WIDTH, Measures.CARRIAGE_WIDTH, Measures.CARRIAGE_WIDTH);
+		Util.drawCuboid(gl, Measures.CARRIAGE_WIDTH, Measures.CARRIAGE_WIDTH, Measures.CARRIAGE_WIDTH);
 	}
 	
 	void drawSpoke() {
 		gl.glColor3d(1, 1, 0);
-		drawCuboid(Measures.SPOKE_THICKNESS, Measures.RADIUS, Measures.SPOKE_THICKNESS);
+		Util.drawCuboid(gl, Measures.SPOKE_THICKNESS, Measures.RADIUS, Measures.SPOKE_THICKNESS);
 	}
 	
 	void drawPiles() {
@@ -232,33 +198,6 @@ class Wheel implements GLEventListener {
 	
 	void drawPile() {
 		gl.glColor3d(0, 1, 0);
-		drawCuboid(Measures.LEG_WIDTH, Measures.HEIGHT, Measures.LEG_WIDTH);
-	}
-	
-	void drawCuboid(double w, double h, double d) {
-		gl.glBegin(GL2.GL_QUAD_STRIP);
-		gl.glVertex3d(-w / 2,  h / 2, -d / 2);
-		gl.glVertex3d( w / 2,  h / 2, -d / 2);
-		gl.glVertex3d(-w / 2,  h / 2,  d / 2);
-		gl.glVertex3d( w / 2,  h / 2,  d / 2);
-		gl.glVertex3d(-w / 2, -h / 2,  d / 2);
-		gl.glVertex3d( w / 2, -h / 2,  d / 2);
-		gl.glVertex3d(-w / 2, -h / 2, -d / 2);
-		gl.glVertex3d( w / 2, -h / 2, -d / 2);
-		gl.glVertex3d(-w / 2,  h / 2, -d / 2);
-		gl.glVertex3d( w / 2,  h / 2, -d / 2);
-		gl.glEnd();
-		
-		gl.glBegin(GL2.GL_QUADS);
-		gl.glVertex3d(-w / 2,  h / 2, -d / 2);
-		gl.glVertex3d(-w / 2,  h / 2,  d / 2);
-		gl.glVertex3d(-w / 2, -h / 2,  d / 2);
-		gl.glVertex3d(-w / 2, -h / 2, -d / 2);
-		
-		gl.glVertex3d(w / 2,  h / 2, -d / 2);
-		gl.glVertex3d(w / 2,  h / 2,  d / 2);
-		gl.glVertex3d(w / 2, -h / 2,  d / 2);
-		gl.glVertex3d(w / 2, -h / 2, -d / 2);
-		gl.glEnd();
+		Util.drawCuboid(gl, Measures.LEG_WIDTH, Measures.HEIGHT, Measures.LEG_WIDTH);
 	}
 }

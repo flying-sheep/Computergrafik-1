@@ -1,3 +1,5 @@
+import gl.Util;
+
 import java.awt.Frame;
 import java.awt.event.*;
 
@@ -57,8 +59,8 @@ public class Ue3_3 extends Frame {
 		public void display(GLAutoDrawable drawable) {
 			gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 			
-			drawGrid();
-			drawCoordinateSystem();
+			Util.drawGrid(gl, 10);
+			Util.drawCoordinateSystem(gl);
 			drawRobot(0, 0, 0);
 			
 			GLU glu = new GLU();
@@ -80,40 +82,6 @@ public class Ue3_3 extends Frame {
 		public void keyReleased(KeyEvent arg0) {}
 		
 		public void keyTyped(KeyEvent arg0) {}
-		
-		void drawCoordinateSystem() {
-			gl.glBegin(GL2.GL_LINES);
-			gl.glColor3d(1, 0, 0);
-			
-			gl.glVertex3i(0, 0, 0);
-			gl.glVertex3i(1, 0, 0);
-			
-			gl.glColor3d(1, 1, 0);
-			
-			gl.glVertex3i(0, 0, 0);
-			gl.glVertex3i(0, 1, 0);
-			
-			gl.glColor3d(0, 1, 0);
-			
-			gl.glVertex3i(0, 0, 0);
-			gl.glVertex3i(0, 0, 1);
-			gl.glEnd();
-		}
-		
-		void drawGrid() {
-			gl.glBegin(GL2.GL_LINES);
-			
-			gl.glColor3d(.3f, .3f, .3f);
-			
-			for (int c=-5; c<=5; c++) {
-				gl.glVertex3i( c, 0, -5);
-				gl.glVertex3i( c, 0,  5);
-				gl.glVertex3i(-5, 0,  c);
-				gl.glVertex3i( 5, 0,  c);
-			}
-			
-			gl.glEnd();
-		}
 		
 		void drawRobot(int x, int y, int z) {
 			gl.glPushMatrix();

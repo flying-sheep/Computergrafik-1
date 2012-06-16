@@ -8,6 +8,8 @@ import javax.media.opengl.fixedfunc.GLMatrixFunc
 import javax.media.opengl.glu.GLU
 import javax.media.opengl._
 
+import gl.Util
+
 object Uebung2_2 extends App {
 	override def main(args: Array[String]) = new Uebung2_2
 	
@@ -39,7 +41,7 @@ class Uebung2_2 extends Frame { frame =>
 	
 	import Uebung2_2.primitive
 	
-	class SceneView extends GLEventListener with KeyListener { scene =>
+	class SceneView extends GLEventListener with KeyListener { scene ⇒
 		var view = 4
 		var gl: GL2 = _
 		
@@ -57,9 +59,9 @@ class Uebung2_2 extends Frame { frame =>
 		def display(drawable: GLAutoDrawable) {
 			gl glClear(GL.GL_COLOR_BUFFER_BIT) // clear background
 			
-			scene drawGrid
+			Util drawGrid (gl, 10)
 			
-			scene drawCoordinateSystem
+			Util drawCoordinateSystem gl
 			
 			scene drawHouse
 			
@@ -84,17 +86,6 @@ class Uebung2_2 extends Frame { frame =>
 		}
 		
 		def dispose(drawable: GLAutoDrawable) {}
-		
-		def drawGrid = primitive(GL.GL_LINES) {
-			gl glColor3d (.3f, .3f, .3f)
-			
-			for (c ← -5 to 5) {
-				gl glVertex3i ( c, 0, -5)
-				gl glVertex3i ( c, 0,  5)
-				gl glVertex3i (-5, 0,  c)
-				gl glVertex3i ( 5, 0,  c)
-			}
-		} (scene gl)
 		
 		def drawHouse {
 			gl glColor3d (0, 1, 0)
@@ -122,23 +113,6 @@ class Uebung2_2 extends Frame { frame =>
 			} (scene gl)
 		}
 		
-		def drawCoordinateSystem = primitive(GL.GL_LINES) {
-			gl glColor3d (1, 0, 0)
-			
-			gl glVertex3i (0, 0, 0)
-			gl glVertex3i (1, 0, 0)
-			
-			gl glColor3d (1, 1, 0)
-			
-			gl glVertex3i (0, 0, 0)
-			gl glVertex3i (0, 1, 0)
-			
-			gl glColor3d (0, 1, 0)
-			
-			gl glVertex3i (0, 0, 0)
-			gl glVertex3i (0, 0, 1)
-		} (scene gl)
-		
 		def keyPressed(e: KeyEvent) {
 			try {
 				scene.view = e.getKeyChar.toString.toInt
@@ -157,5 +131,4 @@ class Uebung2_2 extends Frame { frame =>
 		
 		def keyTyped(e: KeyEvent) {}
 	}
-	
 }

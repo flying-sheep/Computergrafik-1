@@ -3,6 +3,8 @@ package terrain;
 import static java.lang.Math.max;
 import static javax.media.opengl.GL2.*;
 
+import gl.Util;
+
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -99,7 +101,7 @@ class HeightmapRenderer implements GLEventListener {
 		gl.glLoadIdentity();
 		gl.glMultMatrixf(cam.calcModelView(), 0);
 		
-		drawGrid();
+		Util.drawGrid(gl, mapWidth, mapHeight);
 		drawHeightMap();
 		
 		drawHud(drawable);
@@ -129,23 +131,6 @@ class HeightmapRenderer implements GLEventListener {
 	}
 	
 	public void dispose(GLAutoDrawable drawable) {}
-	
-	void drawGrid() {
-		gl.glBegin(GL_LINES);
-		
-		gl.glColor3d(.3f, .3f, .3f);
-		
-		for (int x=-mapWidth/2; x<=mapWidth/2; x++) {
-			gl.glVertex3i(x, 0,-mapHeight/2);
-			gl.glVertex3i(x, 0, mapHeight/2);
-		}
-		for (int z=-mapHeight/2; z<=mapHeight/2; z++) {
-			gl.glVertex3i(-mapWidth/2, 0, z);
-			gl.glVertex3i( mapWidth/2, 0, z);
-		}
-		
-		gl.glEnd();
-	}
 	
 	void drawHeightMap() {
 		gl.glPushMatrix();
