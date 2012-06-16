@@ -4,18 +4,13 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 
-import static javax.media.opengl.GL.GL_FRONT_AND_BACK;
 import static javax.media.opengl.GL2.*;
-import static javax.media.opengl.GL2GL3.GL_LINE;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.DoubleBuffer;
-import java.util.EnumMap;
-import java.util.Map;
 
 import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
@@ -25,22 +20,24 @@ public class Chooser extends JFrame {
 	private static final long serialVersionUID = 3759212296619829724L;
 	
 	static final Perspective DEFAULT_PERSPECTIVE = Perspective.CAVALIER;
-	static enum Perspective { CAVALIER, CABINET }
-	static final Map<Perspective, DoubleBuffer> perspectiveMatrices = new EnumMap<>(Perspective.class);
-	static {
-		double radA = toRadians(45);
-		perspectiveMatrices.put(Perspective.CAVALIER, DoubleBuffer.wrap(new double[] {
-			1, 0, -cos(radA), 0,
-			0, 1, -sin(radA), 0,
-			0, 0, 1         , 0,
-			0, 0, 0         , 1,
-		}));
-		perspectiveMatrices.put(Perspective.CABINET, DoubleBuffer.wrap(new double[] {
-			1, 0, -cos(radA)/2, 0,
-			0, 1, -sin(radA)/2, 0,
-			0, 0, 1           , 0,
-			0, 0, 0           , 1,
-		}));
+	static enum Perspective {
+		CAVALIER(135, 1),
+		CABINET(30, .5);
+		
+		private final double[] matrix;
+		
+		private Perspective(int angle, double ratio) {
+			double radA = toRadians(angle);
+			double c = -cos(radA) * ratio;
+			double s = -sin(radA) * ratio;
+			
+			this.matrix = new double[] {
+				1, 0, c, 0,
+				0, 1, s, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1,
+			};
+		}
 	}
 	
 	Perspective perspective;
@@ -107,7 +104,10 @@ public class Chooser extends JFrame {
 			GL2 gl = drawable.getGL().getGL2();
 			
 			Color bgColor = UIManager.getColor("Panel.background");
-			gl.glClearColor(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1);
+			int r = bgColor.getRed(),
+				g = bgColor.getGreen(),
+				b = bgColor.getBlue();
+			gl.glClearColor(r/255f, g/255f, b/255f, 1);
 			
 			gl.glEnable(GL_DEPTH_TEST);
 			
@@ -125,9 +125,12 @@ public class Chooser extends JFrame {
 			gl.glLoadIdentity();
 			
 			int halfWidth = 1;
-			gl.glOrtho(-halfWidth*aspect, halfWidth*aspect, -halfWidth, halfWidth, -halfWidth, halfWidth);
+			gl.glOrtho(
+				-halfWidth * aspect, halfWidth * aspect,
+				-halfWidth, halfWidth,
+				-halfWidth, halfWidth);
 			
-			gl.glMultTransposeMatrixd(perspectiveMatrices.get(perspective));
+			gl.glMultTransposeMatrixd(perspective.matrix, 0);
 		}
 		
 		public void display(GLAutoDrawable drawable) {
@@ -167,28 +170,20 @@ public class Chooser extends JFrame {
 		
 		void drawCuboid(GL2 gl, double w, double h, double d) {
 			gl.glBegin(GL_QUAD_STRIP);
-			gl.glVertex3d(-w / 2,  h / 2, -d / 2);
-			gl.glVertex3d( w / 2,  h / 2, -d / 2);
-			gl.glVertex3d(-w / 2,  h / 2,  d / 2);
-			gl.glVertex3d( w / 2,  h / 2,  d / 2);
-			gl.glVertex3d(-w / 2, -h / 2,  d / 2);
-			gl.glVertex3d( w / 2, -h / 2,  d / 2);
-			gl.glVertex3d(-w / 2, -h / 2, -d / 2);
-			gl.glVertex3d( w / 2, -h / 2, -d / 2);
-			gl.glVertex3d(-w / 2,  h / 2, -d / 2);
-			gl.glVertex3d( w / 2,  h / 2, -d / 2);
+			for (int s=0; s<10; s++)
+				gl.glVertex3d(
+					(s%2 == 0) ? -w/2 : w/2,
+					(s<4 || s>7) ? h/2 : -h/2,
+					(s<2 || s>5) ? -d/2 : d/2);
 			gl.glEnd();
 			
 			gl.glBegin(GL_QUADS);
-			gl.glVertex3d(-w / 2,  h / 2, -d / 2);
-			gl.glVertex3d(-w / 2,  h / 2,  d / 2);
-			gl.glVertex3d(-w / 2, -h / 2,  d / 2);
-			gl.glVertex3d(-w / 2, -h / 2, -d / 2);
-			
-			gl.glVertex3d(w / 2,  h / 2, -d / 2);
-			gl.glVertex3d(w / 2,  h / 2,  d / 2);
-			gl.glVertex3d(w / 2, -h / 2,  d / 2);
-			gl.glVertex3d(w / 2, -h / 2, -d / 2);
+			for (int l=-1; l<2; l+=2) {
+				gl.glVertex3d(l*w/2,  h/2, -d/2);
+				gl.glVertex3d(l*w/2,  h/2,  d/2);
+				gl.glVertex3d(l*w/2, -h/2,  d/2);
+				gl.glVertex3d(l*w/2, -h/2, -d/2);
+			}
 			gl.glEnd();
 		}
 	}
