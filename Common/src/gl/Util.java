@@ -24,32 +24,57 @@ public class Util {
 		gl.glEnd();
 	}
 	
-	public static void drawCuboid(GL2 gl, double w, double h, double d) {
-		gl.glBegin(GL_QUAD_STRIP);
-		for (int s=0; s<10; s++)
-			gl.glVertex3d(
-				(s%2 == 0) ? -w/2 : w/2,
-				(s<4 || s>7) ? h/2 : -h/2,
-				(s<2 || s>5) ? -d/2 : d/2);
-		gl.glEnd();
+	public static void drawCuboid(GL2 gl, double width, double height, double depth) {
+		final int[] np = new int[] { -1, 1};
+		final double wh = width/2;
+		final double hh = height/2;
+		final double dh = depth/2;
 		
-		gl.glBegin(GL_QUADS);
-		for (int l=-1; l<2; l+=2) {
-			gl.glVertex3d(l*w/2,  h/2, -d/2);
-			gl.glVertex3d(l*w/2,  h/2,  d/2);
-			gl.glVertex3d(l*w/2, -h/2,  d/2);
-			gl.glVertex3d(l*w/2, -h/2, -d/2);
+		gl.glBegin(GL_QUAD_STRIP);
+		//left & right
+		for (int u : np) {
+			gl.glNormal3d(u, 0, 0);
+			for (int v : np) for (int w : np) {
+				gl.glTexCoord2d((v+1)/2, (w+1)/2);
+				gl.glVertex3d(u*wh, v*hh, w*dh);
+			}
+		}
+		
+		//bottom & top
+		for (int v : np) {
+			gl.glNormal3d(0, v, 0);
+			for (int w : np) for (int u : np) {
+				gl.glTexCoord2d((w+1)/2, (u+1)/2);
+				gl.glVertex3d(u*wh, v*hh, w*dh);
+			}
+		}
+		
+		//back & front
+		for (int w: np) {
+			gl.glNormal3d(0, 0, w);
+			for (int u : np) for (int v : np) {
+				gl.glTexCoord2d((u+1)/2, (v+1)/2);
+				gl.glVertex3d(u*wh, v*hh, w*dh);
+			}
 		}
 		gl.glEnd();
 	}
 	
+	/** Draws a centered grid with uniform width and height
+	 * @param gl OpenGL context
+	 * @param s side length */
 	public static void drawGrid(GL2 gl, int s) {
 		drawGrid(gl, s, s);
 	}
+	
+	/** Draws a centered grid with given dimensions
+	 * @param gl OpenGL context
+	 * @param h grid height
+	 * @param v grid width */
 	public static void drawGrid(GL2 gl, int h, int v) {
 		gl.glBegin(GL_LINES);
 		gl.glColor3d(.3, .3, .3);
-
+		
 		for (int x=-h/2; x<=h/2; x++) {
 			gl.glVertex3i(x, 0,-v/2);
 			gl.glVertex3i(x, 0, v/2);
@@ -58,5 +83,7 @@ public class Util {
 			gl.glVertex3i(-h/2, 0, z);
 			gl.glVertex3i( h/2, 0, z);
 		}
+		
+		gl.glEnd();
 	}
 }
