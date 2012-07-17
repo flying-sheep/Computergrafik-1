@@ -3,6 +3,8 @@ package bezier;
 import static java.lang.Math.PI;
 import static javax.media.opengl.GL2.*;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 
 import javax.media.opengl.*;
@@ -27,21 +29,26 @@ public class AnimationRenderer extends JFrame {
 		canvas = new GLCanvas(caps);
 		
 		canvas.addGLEventListener(sv);
-		
-		animator = new FPSAnimator(canvas, 60);
-		
 		add(canvas);
 		
+		animator = new FPSAnimator(canvas, 60);
+		animator.start();
+		
 		setTitle("Casteljau");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(500, 500);
 		setVisible(true);
 		
-		animator.start();
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				animator.stop();
+				dispose();
+			}
+		});
 	}
 	
 	class SceneView implements GLEventListener {
-		Casteljau casteljau;
+		Casteljau c;
 		GLU glu;
 		int s;
 		
@@ -56,7 +63,7 @@ public class AnimationRenderer extends JFrame {
 				new Point2D.Double(8, -5),
 			};
 			
-			casteljau = new Casteljau(ctrlPoints, 100);
+			c = new Casteljau(ctrlPoints, 100);
 		}
 		
 		public void init(GLAutoDrawable drawable) {
@@ -74,7 +81,7 @@ public class AnimationRenderer extends JFrame {
 		
 		private void update() {
 			s++;
-			s %= casteljau.steps;
+			s %= c.steps;
 		}
 		
 		private void render(GLAutoDrawable drawable) {
@@ -87,18 +94,18 @@ public class AnimationRenderer extends JFrame {
 			
 			gl.glColor3d(0, 0, 1);
 			gl.glBegin(GL_LINE_STRIP);
-			for (int i = 0; i < casteljau.curvePoints.length; i++)
-				gl.glVertex3d(casteljau.curvePoints[i].x, 0, casteljau.curvePoints[i].y);
+			for (int i = 0; i < c.curvePoints.length; i++)
+				gl.glVertex3d(c.curvePoints[i].x, 0, c.curvePoints[i].y);
 			gl.glEnd();
 			
 			gl.glColor3d(1, 0, 0);
 			
 			gl.glPushMatrix();
 			Point2D.Double subtracted = new Point2D.Double(
-				casteljau.curvePoints[(s + 1) % casteljau.steps].x - casteljau.curvePoints[s].x,
-				casteljau.curvePoints[(s + 1) % casteljau.steps].y - casteljau.curvePoints[s].y);
+				c.curvePoints[(s + 1) % c.steps].x - c.curvePoints[s].x,
+				c.curvePoints[(s + 1) % c.steps].y - c.curvePoints[s].y);
 			
-			gl.glTranslated(casteljau.curvePoints[s].x, 0, casteljau.curvePoints[s].y);
+			gl.glTranslated(c.curvePoints[s].x, 0, c.curvePoints[s].y);
 			gl.glRotated(Math.atan2(subtracted.x, subtracted.y) * 180 / PI, 0, 1, 0);
 			
 			Util.drawCuboid(gl, 1, 1, 1);
